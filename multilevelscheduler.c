@@ -3,7 +3,7 @@ int at[3][10],bt[3][10],rt[3][10],priority[3][10],number[3];
 int waiting_time=0,overall_time=0,turnaround_time=0;
 int time_quantum = 10;
 int n,remain,type;
-int i,j,flag=0,count =0 ,t_quat=4,RRnumber=0,fcfsnumber=0,fcfsnu=0,RRnu=0,prioritynumber=0,priornu;
+int i,j,flag=0,count =0 ,t_quat=4,RRnumber=0,fcfsnumber=0,fcfsnu=0,RRnu=0,prioritynumber=0,priornu=0;
 void sorted(int queue)
 {
 	int maxa,maxb,maxp ,k,l,temp;
@@ -31,7 +31,7 @@ void sorted(int queue)
 		bt[queue][k]=maxb;
 		priority[queue][k]=maxp;
 		rt[queue][k]=bt[queue][k];
-		}
+		
 	}
 }
 int main()
@@ -61,21 +61,24 @@ int main()
 	}
 	printf("\nqueue list %d %d %d",number[0],number[1],number[2]);
 	printf("\n\nProcess\t|\tArr. Time\t|\tPriority\t|\tCompletion Time\t|\tTurnaround Time\t|\tWaiting Time\n\n");
+	RRnu=number[0];
 	priornu = number[1];
+	fcfsnu = number[2];
+	
 	sorted(1);
-	//sortforfcfs();
+	sortforfcfs();
 	for(overall_time = 0;remain!=0;)
 	{
-		//RRnumber=roundRobin(time_quantum);
-		
+		RRnumber=roundRobin(time_quantum);
+
 		prioritynumber=prioritysch(time_quantum);
 		
-		//fcfsnumber = FCFS(time_quantum);
+		fcfsnumber = FCFS(time_quantum);
+		
 	}
-	/*
-  printf("\nAverage Waiting Time= %f\n",wait_time*1.0/n); 
+  printf("\nAverage Waiting Time= %f\n",waiting_time*1.0/n); 
   printf("Avg Turnaround Time = %f",turnaround_time*1.0/n); 
-  */
+
 return 0;
 	
 }
@@ -111,8 +114,9 @@ void sortforfcfs()
 int prioritysch(int quat)
 {
 	
-	for(count = prioritynumber;priornu!=0&&quat>0;)
+	for(count = prioritynumber;number[1]!=0&&quat>0;)
 	{
+		
 		if(rt[1][count]<=quat && rt[1][count]>0)
 		{
 			overall_time+=rt[1][count];
@@ -128,7 +132,7 @@ int prioritysch(int quat)
 		}
 		if(rt[1][count]==0 && flag==1) 
     		{ 
-			priornu--;
+			number[1]--;
 			remain--; 
       			print_comp(1,overall_time,count);
       			flag=0;
@@ -140,11 +144,12 @@ int prioritysch(int quat)
 		if(count>number[1])
 			count=0;
 	}
+	
 	return count;
 }
 int FCFS(int quat)
 {
-	for(count = fcfsnumber;number[2]!=0&&quat>0;)
+	for(count = fcfsnumber;fcfsnu!=0&&quat>0;)
 	{
 		if(rt[2][count]<=quat && rt[2][count]>0)
 		{
@@ -161,7 +166,7 @@ int FCFS(int quat)
 		}
 		if(rt[2][count]==0 && flag==1) 
     		{ 
-      			number[2]--;
+      			fcfsnu--;
 			remain--; 
       			print_comp(2,overall_time,count);
       			flag=0;
@@ -171,13 +176,16 @@ int FCFS(int quat)
 		if(at[2][count]<=overall_time) 
   	    		count++;
 		if(count>number[2])
-			count=0;
+		{
+			count=0;	
+			quat=0;
+		}
 	}
 	return count;
 }
 int roundRobin(int quat)
 {
-	for(count=RRnumber,t_quat=4;number[0]!=0 && quat>0;)
+	for(count=RRnumber,t_quat=4;RRnu!=0 && quat>0;)
 	{
 		if(t_quat>quat)
 		{
@@ -198,7 +206,7 @@ int roundRobin(int quat)
     		}	 	
     		if(rt[0][count]==0 && flag==1) 
     		{ 
-      			number[0]--;
+      			RRnu--;
 			remain--; 
       			print_comp(0,overall_time,count);
       			flag=0; 
@@ -209,12 +217,14 @@ int roundRobin(int quat)
   	    		count++; 
     		else 
       			count=0;
-		
+		if(RRnu==0)
+			quat=0;
 	 
   	}
 	 
-return count;
+	return count;
 }
+
 void print_comp(int type,int time,int c)
 {
 	printf("\nP[%d%d]\t|\t%d\t|\t%d\t|\t%d\t|\t%d\t|\t%d\n",type,c+1,at[type][c],priority[type][c],time,time-at[type][c],time-at[type][c]-bt[type][c]); 
