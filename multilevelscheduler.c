@@ -3,20 +3,35 @@ int at[3][10],bt[3][10],rt[3][10],priority[3][10],number[3];
 int waiting_time=0,overall_time=0,turnaround_time=0;
 int time_quantum = 10;
 int n,remain,type;
-int i,j,flag=0,count =0 ,t_quat=4,RRnumber=0,fcfsnumber=0,prioritynumber=0;
+int i,j,flag=0,count =0 ,t_quat=4,RRnumber=0,fcfsnumber=0,fcfsnu=0,RRnu=0,prioritynumber=0,priornu;
 void sorted(int queue)
 {
 	int maxa,maxb,maxp ,k,l,temp;
 	for(k = 0;k<number[queue];k++)
 	{
-		max = priority[queue][k];		
+		maxp = priority[queue][k];
+		maxb = bt[queue][k];
+		maxa = at[queue][k];		
 		for( l=0;l<number[queue];l++)
-			if(max>priority[queue][l])
+		{
+			if(maxp>priority[queue][l])
 			{
-				temp=max;
-				max = priority[queue][l];
+				temp=maxp;
+				maxp = priority[queue][l];
 				priority[queue][l]=temp;
-			}	
+				temp = maxb;
+				maxb = bt[queue][l];
+				bt[queue][l]=temp;
+				temp=maxa;
+				maxa=at[queue][l];
+				at[queue][l]=temp;
+			}
+		}
+		at[queue][k]=maxa;
+		bt[queue][k]=maxb;
+		priority[queue][k]=maxp;
+		rt[queue][k]=bt[queue][k];
+		}
 	}
 }
 int main()
@@ -46,12 +61,15 @@ int main()
 	}
 	printf("\nqueue list %d %d %d",number[0],number[1],number[2]);
 	printf("\n\nProcess\t|\tArr. Time\t|\tPriority\t|\tCompletion Time\t|\tTurnaround Time\t|\tWaiting Time\n\n");
-
+	priornu = number[1];
+	sorted(1);
+	//sortforfcfs();
 	for(overall_time = 0;remain!=0;)
 	{
 		//RRnumber=roundRobin(time_quantum);
+		
 		prioritynumber=prioritysch(time_quantum);
-		//sortforfcfs();
+		
 		//fcfsnumber = FCFS(time_quantum);
 	}
 	/*
@@ -92,7 +110,8 @@ void sortforfcfs()
 }
 int prioritysch(int quat)
 {
-	for(count = prioritynumber;number[1]!=0&&quat>0;)
+	
+	for(count = prioritynumber;priornu!=0&&quat>0;)
 	{
 		if(rt[1][count]<=quat && rt[1][count]>0)
 		{
@@ -109,7 +128,7 @@ int prioritysch(int quat)
 		}
 		if(rt[1][count]==0 && flag==1) 
     		{ 
-      			number[1]--;
+			priornu--;
 			remain--; 
       			print_comp(1,overall_time,count);
       			flag=0;
