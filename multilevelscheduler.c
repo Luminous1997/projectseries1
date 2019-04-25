@@ -54,7 +54,12 @@ int main()
 	for(overall_time = 0;remain!=0;)
 	{
 		//roundRobin(time_quantum);
-		FCFS(time_quantum);
+		for(i=0;i<number[2];i++)
+			printf("\nbefore process : %d Arrival Time : %d BT : %d \n",i+1,at[2][i],bt[2][i]);
+		sortforfcfs();
+		for(i=0;i<number[2];i++)
+			printf("\nAfterprocess : %d Arrival Time : %d \n BT : %d",i+1,at[2][i],bt[2][i]);
+		fcfsnumber = FCFS(time_quantum);
 	}
 	/*
   printf("\nAverage Waiting Time= %f\n",wait_time*1.0/n); 
@@ -62,6 +67,35 @@ int main()
   */
 return 0;
 	
+}
+void sortforfcfs()
+{
+	int temp,mina,minb,minp;
+	for(i=0;i<number[2]-1;i++)
+	{
+		mina=at[2][i];
+		minb = bt[2][i];
+		minp=priority[2][i];
+		for(j=0;j<number[2];j++)
+		{
+			if(mina>at[2][j])
+			{
+				temp=mina;
+				mina = at[2][j];
+				at[2][j]=temp;
+				temp = minb;
+				minb = bt[2][j];
+				bt[2][j]=temp;
+				temp=minp;
+				minp=priority[2][j];
+				priority[2][j]=temp;
+			}
+		}
+		at[2][i]=mina;
+		bt[2][i]=minb;
+		priority[2][j]=minp;
+		rt[2][i]=bt[2][i];
+	}
 }
 int FCFS(int quat)
 {
@@ -74,7 +108,7 @@ int FCFS(int quat)
 			rt[2][count]=0;
 			flag=1;
 		}
-		else if(rt[2][count]>0 && rt[2][count]>quat)
+		else if(rt[2][count]>0)
 		{
 			overall_time+=quat;
 			rt[2][count]-=quat;
@@ -88,11 +122,13 @@ int FCFS(int quat)
       			flag=0;
 			count++; 
     		}
-		if(quat==0)
-			fcfsnumber=count;
+
 		if(at[2][count]<=overall_time) 
   	    		count++;
+		if(count>number[2])
+			count=0;
 	}
+	return count;
 }
 int roundRobin(int quat)
 {
