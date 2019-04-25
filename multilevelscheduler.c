@@ -3,7 +3,7 @@ int at[3][10],bt[3][10],rt[3][10],priority[3][10],number[3];
 int waiting_time=0,overall_time=0,turnaround_time=0;
 int time_quantum = 10;
 int n,remain,type;
-int i,j,flag=0,count =0 ,t_quat=4;
+int i,j,flag=0,count =0 ,t_quat=4,fcfsnumber=0;
 void sorted(int queue)
 {
 	int max ,k,l,temp;
@@ -53,9 +53,8 @@ int main()
 
 	for(overall_time = 0;remain!=0;)
 	{
-		roundRobin(time_quantum);
-		//if(number[0]==0 && number[1]==0 && number[2]==0)
-			//break;
+		//roundRobin(time_quantum);
+		FCFS(time_quantum);
 	}
 	/*
   printf("\nAverage Waiting Time= %f\n",wait_time*1.0/n); 
@@ -63,6 +62,37 @@ int main()
   */
 return 0;
 	
+}
+int FCFS(int quat)
+{
+	for(count = fcfsnumber;number[2]!=0&&quat>0;)
+	{
+		if(rt[2][count]<=quat && rt[2][count]>0)
+		{
+			overall_time+=rt[2][count];
+			quat-=rt[2][count];
+			rt[2][count]=0;
+			flag=1;
+		}
+		else if(rt[2][count]>0 && rt[2][count]>quat)
+		{
+			overall_time+=quat;
+			rt[2][count]-=quat;
+			quat =0;
+		}
+		if(rt[2][count]==0 && flag==1) 
+    		{ 
+      			number[2]--;
+			remain--; 
+      			print_comp(2,overall_time,count);
+      			flag=0;
+			count++; 
+    		}
+		if(quat==0)
+			fcfsnumber=count;
+		if(at[2][count]<=overall_time) 
+  	    		count++;
+	}
 }
 int roundRobin(int quat)
 {
