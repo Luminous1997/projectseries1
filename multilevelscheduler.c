@@ -143,6 +143,7 @@ int prioritysch(int quat)
   	    		count++;
 		if(count>number[1])
 			count=0;
+		
 	}
 	
 	return count;
@@ -151,6 +152,8 @@ int FCFS(int quat)
 {
 	for(count = fcfsnumber;fcfsnu!=0&&quat>0;)
 	{
+		if(RRnu==0)
+			quat=0;
 		if(rt[2][count]<=quat && rt[2][count]>0)
 		{
 			overall_time+=rt[2][count];
@@ -206,7 +209,7 @@ int roundRobin(int quat)
     		}	 	
     		if(rt[0][count]==0 && flag==1) 
     		{ 
-      			RRnu--;
+      			RRnu-=1;
 			remain--; 
       			print_comp(0,overall_time,count);
       			flag=0; 
@@ -217,8 +220,7 @@ int roundRobin(int quat)
   	    		count++; 
     		else 
       			count=0;
-		if(RRnu==0)
-			quat=0;
+		
 	 
   	}
 	 
